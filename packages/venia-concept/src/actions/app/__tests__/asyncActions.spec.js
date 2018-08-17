@@ -9,7 +9,7 @@ jest.mock('src');
 const { addReducer, dispatch, getState } = store;
 const thunkArgs = [dispatch, getState];
 
-beforeEach(() => {
+afterEach(() => {
     addReducer.mockClear();
     dispatch.mockClear();
 });
