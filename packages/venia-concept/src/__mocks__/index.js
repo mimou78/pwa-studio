@@ -8,4 +8,4 @@ const mock = jest.fn().mockImplementation(() => ({
     getState: mockGetState
 }));
 
-export const store = mock;
+export const store = mock();
