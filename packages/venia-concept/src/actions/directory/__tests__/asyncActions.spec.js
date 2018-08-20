@@ -57,7 +57,7 @@ test('getCountries thunk dispatches actions on success', async () => {
     expect(dispatch).toHaveBeenCalledTimes(1);
 });
 
-test('getCountries thunk dispatches actions on success', async () => {
+test('getCountries thunk dispatches actions on failure', async () => {
     const error = new Error('BAR');
 
     getState.mockImplementationOnce(() => ({
