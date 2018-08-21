@@ -4,9 +4,11 @@ import { store } from 'src';
 import actions from '../actions';
 import {
     editOrder,
+    formatAddress,
     resetCheckout,
     submitCart,
-    submitInput
+    submitInput,
+    submitOrder
 } from '../asyncActions';
 
 jest.mock('src');
@@ -147,4 +149,71 @@ test('submitInput thunk throws if payload is invalid', async () => {
     expect(dispatch).toHaveBeenNthCalledWith(1, actions.input.submit(payload));
     expect(dispatch).toHaveBeenNthCalledWith(2, expect.any(Function));
     expect(dispatch).toHaveBeenCalledTimes(2);
+});
+
+test('submitOrder() returns a thunk', () => {
+    expect(submitOrder()).toBeInstanceOf(Function);
+});
+
+test('submitOrder thunk returns undefined', async () => {
+    const result = await submitOrder()(...thunkArgs);
+
+    expect(result).toBeUndefined();
+});
+
+test('submitOrder thunk dispatches actions on success', async () => {
+    const response = true;
+
+    request.mockResolvedValueOnce(response);
+    await submitOrder()(...thunkArgs);
+
+    expect(dispatch).toHaveBeenNthCalledWith(1, actions.order.submit());
+    expect(dispatch).toHaveBeenNthCalledWith(2, actions.order.accept(response));
+    expect(dispatch).toHaveBeenCalledTimes(2);
+});
+
+test('submitOrder thunk dispatches actions on failure', async () => {
+    const error = new Error('ERROR');
+
+    request.mockRejectedValueOnce(error);
+    await submitOrder()(...thunkArgs);
+
+    expect(dispatch).toHaveBeenNthCalledWith(1, actions.order.submit());
+    expect(dispatch).toHaveBeenNthCalledWith(2, actions.order.reject(error));
+    expect(dispatch).toHaveBeenCalledTimes(2);
+});
+
+test('formatAddress throws if countries does not include country_id', () => {
+    const shouldThrow = () => formatAddress();
+
+    expect(shouldThrow).toThrow();
+});
+
+test('formatAddress returns a new object', () => {
+    const result = formatAddress(address, countries);
+
+    expect(result).toEqual(address);
+    expect(result).not.toBe(address);
+});
+
+test('formatAddress looks up and adds region data', () => {
+    const values = { region_code: address.region_code };
+    const result = formatAddress(values, countries);
+
+    expect(result).toHaveProperty('region', address.region);
+    expect(result).toHaveProperty('region_id', address.region_id);
+    expect(result).toHaveProperty('region_code', address.region_code);
+});
+
+test('formatAddress throws if country is not found', () => {
+    const shouldThrow = () => formatAddress();
+
+    expect(shouldThrow).toThrow('country');
+});
+
+test('formatAddress throws if region is not found', () => {
+    const values = { region_code: '|||' };
+    const shouldThrow = () => formatAddress(values, countries);
+
+    expect(shouldThrow).toThrow('region');
 });
