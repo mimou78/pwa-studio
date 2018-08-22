@@ -33,15 +33,19 @@ class MiniCart extends Component {
     async componentDidMount() {
         const { getCartDetails, loadReducers } = this.props;
 
-        loadReducers([
+        // load reducers first
+        const reducers = await Promise.all([
             import('src/reducers/cart'),
             import('src/reducers/checkout')
         ]);
 
+        // then add them and fetch cart data
+        await loadReducers(reducers);
+        await getCartDetails();
+
+        // then load extra components
         const CheckoutModule = await import('src/components/Checkout');
         Checkout = CheckoutModule.default;
-
-        getCartDetails();
     }
 
     get productList() {

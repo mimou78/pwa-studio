@@ -55,7 +55,7 @@ test('createGuestCart thunk uses the guest cart from storage', async () => {
     expect(dispatch).toHaveBeenNthCalledWith(1, checkoutActions.reset());
     expect(dispatch).toHaveBeenNthCalledWith(
         2,
-        actions.receiveGuestCart(storedGuestCartId)
+        actions.getGuestCart.receive(storedGuestCartId)
     );
     expect(dispatch).toHaveBeenCalledTimes(2);
     expect(request).not.toHaveBeenCalled();
@@ -70,10 +70,10 @@ test('createGuestCart thunk dispatches actions on success', async () => {
     await createGuestCart()(...thunkArgs);
 
     expect(dispatch).toHaveBeenNthCalledWith(1, checkoutActions.reset());
-    expect(dispatch).toHaveBeenNthCalledWith(2, actions.requestGuestCart());
+    expect(dispatch).toHaveBeenNthCalledWith(2, actions.getGuestCart.request());
     expect(dispatch).toHaveBeenNthCalledWith(
         3,
-        actions.receiveGuestCart(response)
+        actions.getGuestCart.receive(response)
     );
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(mockSetItem).toHaveBeenCalled();
@@ -88,10 +88,10 @@ test('createGuestCart thunk dispatches actions on failure', async () => {
     await createGuestCart()(...thunkArgs);
 
     expect(dispatch).toHaveBeenNthCalledWith(1, checkoutActions.reset());
-    expect(dispatch).toHaveBeenNthCalledWith(2, actions.requestGuestCart());
+    expect(dispatch).toHaveBeenNthCalledWith(2, actions.getGuestCart.request());
     expect(dispatch).toHaveBeenNthCalledWith(
         3,
-        actions.receiveGuestCart(error)
+        actions.getGuestCart.receive(error)
     );
     expect(dispatch).toHaveBeenCalledTimes(3);
 });
@@ -115,9 +115,13 @@ test('addItemToCart thunk dispatches actions on success', async () => {
 
     expect(dispatch).toHaveBeenNthCalledWith(
         1,
-        actions.addItem({ cartItem, ...payload })
+        actions.addItem.request(payload)
     );
-    expect(dispatch).toHaveBeenNthCalledWith(2, expect.any(Function));
+    expect(dispatch).toHaveBeenNthCalledWith(
+        2,
+        actions.addItem.receive({ cartItem, ...payload })
+    );
     expect(dispatch).toHaveBeenNthCalledWith(3, expect.any(Function));
-    expect(dispatch).toHaveBeenCalledTimes(3);
+    expect(dispatch).toHaveBeenNthCalledWith(4, expect.any(Function));
+    expect(dispatch).toHaveBeenCalledTimes(4);
 });
