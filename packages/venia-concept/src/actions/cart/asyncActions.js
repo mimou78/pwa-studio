@@ -125,13 +125,21 @@ export const getCartDetails = (payload = {}) => {
                 })
             ]);
 
-            details.items.forEach(item => {
-                item.image = item.image || imageCache[item.sku] || {};
-            });
+            const { items } = details;
+
+            // for each item in the cart, look up its image in the cache
+            // and merge it into the item object
+            if (imageCache && Array.isArray(items) && items.length) {
+                items.forEach(item => {
+                    item.image = item.image || imageCache[item.sku] || {};
+                });
+            }
 
             dispatch(actions.getDetails.receive({ details, totals }));
         } catch (error) {
             const { response } = error;
+
+            dispatch(actions.getDetails.receive(error));
 
             // check if the guest cart has expired
             if (response && response.status === 404) {
@@ -140,8 +148,6 @@ export const getCartDetails = (payload = {}) => {
                 // then retry this operation
                 return thunk(...arguments);
             }
-
-            dispatch(actions.getDetails.receive(error));
         }
     };
 };
@@ -157,14 +163,14 @@ export const toggleCart = () =>
 
         // if the cart drawer is open, close it
         if (app.drawer === 'cart') {
-            await dispatch(closeDrawer());
-            return;
+            return dispatch(closeDrawer());
         }
 
         // otherwise open the cart and load its contents
-        await Promise.all[
-            (dispatch(toggleDrawer('cart')), dispatch(getCartDetails()))
-        ];
+        await Promise.all([
+            dispatch(toggleDrawer('cart')),
+            dispatch(getCartDetails())
+        ]);
     };
 
 /* helpers */
