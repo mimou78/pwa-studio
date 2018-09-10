@@ -34,9 +34,7 @@ function* extractChildCategories(category) {
         yield* extractChildCategories(child);
     }
 
-    Object.assign(category, {
-        childrenData: childrenData.map(({ id }) => id)
-    });
+    category.childrenData = childrenData.map(({ id }) => id);
 
     yield category;
 }
