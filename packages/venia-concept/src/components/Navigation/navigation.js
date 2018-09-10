@@ -41,9 +41,43 @@ class Navigation extends PureComponent {
         rootNodeId: null
     };
 
+    get headerItems() {
+        const { rootNodeId } = this.state;
+        const { classes, closeDrawer, rootCategoryId } = this.props;
+        const isTopLevel = !rootNodeId || rootNodeId === rootCategoryId;
+
+        const title = isTopLevel && (
+            <h2 key="title" className={classes.title}>
+                <span>Main Menu</span>
+            </h2>
+        );
+
+        const backButton = isTopLevel ? null : (
+            <Trigger
+                key="backButton"
+                className={classes.backButton}
+                action={this.goUpOneLevel}
+            >
+                <Icon name="arrow-left" />
+            </Trigger>
+        );
+
+        const closeButton = (
+            <Trigger
+                key="closeButton"
+                className={classes.closeButton}
+                action={closeDrawer}
+            >
+                <Icon name="x" />
+            </Trigger>
+        );
+
+        return [backButton, title, closeButton];
+    }
+
     get categoryTree() {
         const { rootNodeId } = this.state;
-        const { categories } = this.props;
+        const { categories, closeDrawer } = this.props;
 
         if (!rootNodeId) {
             return null;
@@ -53,23 +87,9 @@ class Navigation extends PureComponent {
             <Tree
                 nodes={categories}
                 rootNodeId={rootNodeId}
+                onNavigate={closeDrawer}
                 updateRootNodeId={this.setRootNodeId}
             />
-        );
-    }
-
-    get backButton() {
-        const { rootNodeId } = this.state;
-        const { rootCategoryId } = this.props;
-
-        if (!rootNodeId || rootNodeId === rootCategoryId) {
-            return null;
-        }
-
-        return (
-            <Trigger action={this.goUpOneLevel}>
-                <Icon name="arrow-left" />
-            </Trigger>
         );
     }
 
@@ -86,21 +106,13 @@ class Navigation extends PureComponent {
     };
 
     render() {
-        const { backButton, categoryTree, props } = this;
-        const { classes, closeDrawer, isOpen } = props;
+        const { categoryTree, headerItems, props } = this;
+        const { classes, isOpen } = props;
         const className = isOpen ? classes.root_open : classes.root;
 
         return (
             <aside className={className}>
-                <div className={classes.header}>
-                    {backButton}
-                    <h2 className={classes.title}>
-                        <span>Main Menu</span>
-                    </h2>
-                    <Trigger className={classes.trigger} action={closeDrawer}>
-                        <Icon name="x" />
-                    </Trigger>
-                </div>
+                <div className={classes.header}>{headerItems}</div>
                 <div className={classes.body}>{categoryTree}</div>
             </aside>
         );

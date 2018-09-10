@@ -1,13 +1,10 @@
 import { Component, createElement } from 'react';
-import { Link } from 'react-router-dom';
 import { arrayOf, func, number, objectOf, shape, string } from 'prop-types';
 
 import classify from 'src/classify';
 import defaultClasses from './categoryLeaf.css';
 
-const urlSuffix = '.html';
-
-class Leaf extends Component {
+class Branch extends Component {
     static propTypes = {
         children: func,
         classes: shape({
@@ -23,15 +20,13 @@ class Leaf extends Component {
                 urlPath: string
             })
         ),
-        onNavigate: func
+        onDive: func.isRequired
     };
 
     handleClick = () => {
-        const { onNavigate } = this.props;
+        const { nodeId, onDive } = this.props;
 
-        if (typeof onNavigate === 'function') {
-            onNavigate();
-        }
+        onDive(nodeId);
     };
 
     render() {
@@ -40,15 +35,11 @@ class Leaf extends Component {
         const text = children ? children({ node }) : node.name;
 
         return (
-            <Link
-                className={classes.root}
-                to={`/${node.urlPath}${urlSuffix}`}
-                onClick={this.handleClick}
-            >
+            <button className={classes.root} onClick={this.handleClick}>
                 <span className={classes.text}>{text}</span>
-            </Link>
+            </button>
         );
     }
 }
 
-export default classify(defaultClasses)(Leaf);
+export default classify(defaultClasses)(Branch);
