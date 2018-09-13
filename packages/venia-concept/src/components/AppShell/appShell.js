@@ -1,47 +1,45 @@
-import { Component, createElement } from 'react'
-import { bool, func, shape, string } from 'prop-types'
+import { Component, createElement } from 'react';
+import { func, shape } from 'prop-types';
 
-import { Page } from '@magento/peregrine'
+let App;
+const reducers = ['app', 'cart', 'catalog', 'checkout', 'directory'];
 
-export default () => (
-    <div>
-        <header>hello world</header>
-        <Page />
-    </div>
-)
+class AppShell extends Component {
+    static propTypes = {
+        store: shape({
+            addReducers: func.isRequired
+        }).isRequired
+    };
 
-// import classify from 'src/classify'
-// import defaultClasses from './appShell.css'
+    state = {
+        ready: false
+    };
 
-// class AppShell extends Component {
-//     static propTypes = {
-//         app: shape({
-//             drawer: string,
-//             overlay: bool.isRequired,
-//         }).isRequired,
-//         classes: shape({
-//             root: string,
-//             root_masked: string,
-//         }),
-//         closeDrawer: func.isRequired,
-//     };
+    async componentDidMount() {
+        const { store } = this.props;
 
-//     render() {
-//         const { app, children, classes, closeDrawer } = this.props;
-//         const { drawer, overlay } = app;
-//         const navIsOpen = drawer === 'nav';
-//         const cartIsOpen = drawer === 'cart';
-//         const className = overlay ? classes.root_masked : classes.root;
+        // import dependencies asynchronously
+        // all reducers will be bundled into a single chunk
+        const [AppModule, ...reducerModules] = await Promise.all([
+            import('./container'),
+            ...reducers.map((reducer /* webpackMode: "lazy-once" */) =>
+                import(`src/reducers/${reducer}`)
+            )
+        ]);
 
-//         return (
-//             <div className={className}>
-//                 <Main isMasked={overlay}>{children}</Main>
-//                 <Mask isActive={overlay} dismiss={closeDrawer} />
-//                 <Navigation isOpen={navIsOpen} />
-//                 <MiniCart isOpen={cartIsOpen} />
-//             </div>
-//         )
-//     }
-// }
+        // assign imported components
+        App = AppModule.default;
 
-// export default classify(defaultClasses)(AppShell)
+        // add imported reducers to the store
+        store.addReducers(reducerModules.map(mod => [mod.name, mod.default]));
+
+        // update state and re-render
+        this.setState(() => ({ ready: true }));
+    }
+
+    render() {
+        return this.state.ready ? <App /> : <div>hello world</div>;
+    }
+}
+
+export default AppShell;

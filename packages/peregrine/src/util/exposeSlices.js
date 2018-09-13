@@ -15,15 +15,17 @@ const exposeSlices = createStore => (...args) => {
      * Add a slice to the root.
      * The store replaces the root with one containing the new slice.
      */
-    const addReducer = (key, reducer) => {
-        slices[key] = reducer;
+    const addReducers = reducerMap => {
+        for (const [key, reducer] of reducerMap) {
+            slices[key] = reducer;
+        }
 
         store.replaceReducer(combineReducers(slices));
     };
 
     return {
         ...store,
-        addReducer
+        addReducers
     };
 };
 

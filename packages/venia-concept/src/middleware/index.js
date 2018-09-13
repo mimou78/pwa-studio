@@ -1,4 +1,4 @@
-import { applyMiddleware } from 'redux'
+import { applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import log from './log';

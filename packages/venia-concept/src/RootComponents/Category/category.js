@@ -1,10 +1,10 @@
 import { Component, createElement } from 'react';
-import { string, number, shape } from 'prop-types';
+import { number, shape, string } from 'prop-types';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+
 import classify from 'src/classify';
 import Gallery from 'src/components/Gallery';
-import Page from 'src/components/Page';
 import defaultClasses from './category.css';
 
 const categoryQuery = gql`
@@ -52,7 +52,7 @@ class Category extends Component {
         const { id, classes } = this.props;
 
         return (
-            <Page>
+            <article>
                 <Query query={categoryQuery} variables={{ id }}>
                     {({ loading, error, data }) => {
                         if (error) return <div>Data Fetch Error</div>;
@@ -78,7 +78,7 @@ class Category extends Component {
                         );
                     }}
                 </Query>
-            </Page>
+            </article>
         );
     }
 }

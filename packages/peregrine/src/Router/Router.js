@@ -1,8 +1,8 @@
 import { Component, createContext, createElement } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { func, object, shape, string } from 'prop-types';
 
-export const { Consumer, Provider } = createContext()
+export const { Consumer, Provider } = createContext();
 
 export default class MagentoRouter extends Component {
     static propTypes = {
@@ -11,12 +11,12 @@ export default class MagentoRouter extends Component {
             __tmp_webpack_public_path__: string.isRequired
         }).isRequired,
         routerProps: object,
-        using: func, // e.g., BrowserRouter, MemoryRouter
+        using: func // e.g., BrowserRouter, MemoryRouter
     };
 
     static defaultProps = {
         routerProps: {},
-        using: BrowserRouter,
+        using: BrowserRouter
     };
 
     render() {
@@ -24,9 +24,7 @@ export default class MagentoRouter extends Component {
 
         return (
             <Provider value={config}>
-                <Router {...routerProps}>
-                    {children}
-                </Router>
+                <Router {...routerProps}>{children}</Router>
             </Provider>
         );
     }

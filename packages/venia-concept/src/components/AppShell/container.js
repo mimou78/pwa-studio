@@ -1,10 +1,13 @@
-import { connect } from 'redux'
+import { connect } from 'react-redux';
 
-import { closeDrawer } from 'src/actions/app'
-import AppShell from './appShell'
+import { closeDrawer } from 'src/actions/app';
+import App from './app';
 
-const mapDispatchToProps = { closeDrawer }
+const mapDispatchToProps = { closeDrawer };
 
-const mapStateToProps = ({ app }) => ({ app })
+const mapStateToProps = ({ app }) => ({ app });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppShell)
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

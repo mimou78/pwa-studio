@@ -2,26 +2,27 @@ import { createElement } from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
-import { Provider as ReduxProvider } from 'react-redux'
-import { Router } from '@magento/peregrine'
+import { Provider as ReduxProvider } from 'react-redux';
+import { Router } from '@magento/peregrine';
 
-import store from 'src/store'
-import AppShell from 'src/components/AppShell'
-import ensureDirURI from 'src/util/ensureDirUri'
-import './index.css'
+import createStore from 'src/store';
+import AppShell from 'src/components/AppShell';
+import ensureDirURI from 'src/util/ensureDirUri';
+import './index.css';
 
 const apolloClient = new ApolloClient();
+const store = createStore();
 
 const runtimeConfig = {
     apiBase: new URL('/graphql', location.origin).toString(),
-    __tmp_webpack_public_path__: ensureDirURI(__webpack_public_path__),
-}
+    __tmp_webpack_public_path__: ensureDirURI(__webpack_public_path__)
+};
 
 ReactDOM.render(
     <ApolloProvider client={apolloClient}>
         <ReduxProvider store={store}>
             <Router config={runtimeConfig}>
-                <AppShell />
+                <AppShell store={store} />
             </Router>
         </ReduxProvider>
     </ApolloProvider>,

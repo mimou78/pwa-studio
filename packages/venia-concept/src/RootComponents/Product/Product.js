@@ -5,7 +5,6 @@ import gql from 'graphql-tag';
 import { bool, shape, number, arrayOf, string } from 'prop-types';
 
 import { addItemToCart } from 'src/actions/cart';
-import Page from 'src/components/Page';
 import ProductFullDetail from 'src/components/ProductFullDetail';
 import getUrlKey from 'src/util/getUrlKey';
 
