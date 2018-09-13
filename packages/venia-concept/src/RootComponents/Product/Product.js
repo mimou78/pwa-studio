@@ -85,7 +85,7 @@ class Product extends Component {
 
     render() {
         return (
-            <Page>
+            <article>
                 <Query
                     query={productDetailQuery}
                     variables={{ urlKey: getUrlKey() }}
@@ -104,7 +104,7 @@ class Product extends Component {
                         );
                     }}
                 </Query>
-            </Page>
+            </article>
         );
     }
 }
