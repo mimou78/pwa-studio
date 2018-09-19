@@ -9,6 +9,9 @@ entries:
   - label: Simple REST checkout flow
     url: /venia-pwa-concept/simple-rest-checkout/
 
+  - label: Directory structure
+    url: /venia-pwa-concept/directory-structure/
+
   - label: Design
     entries:
 
